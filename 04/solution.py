@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from operator import xor
 
+
 @dataclass
 class Floor:
     grid: list[list[bool]]
@@ -66,6 +67,7 @@ def parse(lines: list[str]):
 
 def removable(floor, x, y):
     return floor.at(x, y) and floor.neighbor_count(x, y) < 4
+
 
 with open("04/input.txt", encoding="utf-8") as f:
     floor = parse(f.readlines())
