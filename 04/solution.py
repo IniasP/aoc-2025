@@ -65,25 +65,26 @@ def parse(lines: list[str]):
     return Floor([[c == "@" for c in row.strip()] for row in lines])
 
 
-def removable(floor, x, y):
+def is_removable(floor, x, y):
     return floor.at(x, y) and floor.neighbor_count(x, y) < 4
+
+
+def find_removable(floor):
+    return floor.map(lambda _, x, y: is_removable(floor, x, y))
 
 
 with open("04/input.txt", encoding="utf-8") as f:
     floor = parse(f.readlines())
 
     # part 1
-    accessible_floor = floor.map(lambda _, x, y: removable(floor, x, y))
+    accessible_floor = find_removable(floor)
     print(accessible_floor)
     print(f"Part 1: {accessible_floor.count_true()}")
 
     # part 2
     total_removed = 0
-    while True:
-        removable_rolls = floor.map(lambda _, x, y: removable(floor, x, y))
+    while (removable_rolls := find_removable(floor)).count_true() > 0:
         cleaned_floor = floor.merge(removable_rolls, xor)
-        if floor == cleaned_floor:
-            break
         num_removed = removable_rolls.count_true()
         print(f"Removed {num_removed} rolls")
         total_removed += num_removed
