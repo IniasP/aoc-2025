@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from operator import xor
 
 @dataclass
 class Floor:
@@ -48,22 +48,44 @@ class Floor:
     def neighbor_count(self, x, y):
         return sum(1 for (nx, ny) in self.neighbor_coords(x, y) if self.at(nx, ny))
 
+    def merge(self, other, f):
+        return self.map(lambda val, x, y: f(val, other.at(x, y)))
+
     def __str__(self) -> str:
         return "\n".join(
             ["".join(["x" if t else "." for t in row]) for row in self.grid]
         )
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, self.__class__) and other.grid == self.grid
 
 
 def parse(lines: list[str]):
     return Floor([[c == "@" for c in row.strip()] for row in lines])
 
 
+def removable(floor, x, y):
+    return floor.at(x, y) and floor.neighbor_count(x, y) < 4
+
 with open("04/input.txt", encoding="utf-8") as f:
     floor = parse(f.readlines())
 
     # part 1
-    accessible_floor = floor.map(
-        lambda val, x, y: val and floor.neighbor_count(x, y) < 4
-    )
+    accessible_floor = floor.map(lambda _, x, y: removable(floor, x, y))
     print(accessible_floor)
     print(f"Part 1: {accessible_floor.count_true()}")
+
+    # part 2
+    total_removed = 0
+    while True:
+        removable_rolls = floor.map(lambda _, x, y: removable(floor, x, y))
+        cleaned_floor = floor.merge(removable_rolls, xor)
+        if floor == cleaned_floor:
+            break
+        num_removed = removable_rolls.count_true()
+        print(f"Removed {num_removed} rolls")
+        total_removed += num_removed
+        floor = cleaned_floor
+        print(floor)
+
+    print(f"Removed a total of {total_removed} rolls")
