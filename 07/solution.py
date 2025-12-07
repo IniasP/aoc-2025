@@ -27,10 +27,24 @@ def trace_part2(timeline_counts: list[int], lines: list[str]):
     return trace_part2(timeline_counts, rest_lines)
 
 
+def trace_part2_iterative(lines):
+    first, *rest = lines
+    timeline_counts = [1 if c == "S" else 0 for c in first]
+    for line in rest:
+        for i, char in enumerate(line):
+            if char == "^":
+                count = timeline_counts[i]
+                timeline_counts[i - 1] += count
+                timeline_counts[i + 1] += count
+                timeline_counts[i] = 0
+    return sum(timeline_counts)
+
+
 with open("07/input.txt") as f:
     all_lines = [l.strip() for l in f.readlines()]
     first, *rest = all_lines
     beams_init = [c == "S" for c in first]
     timeline_counts_init = [1 if b else 0 for b in beams_init]
     print("Splits:", trace_part1(beams_init, rest, 0))
-    print("Timelines:", trace_part2(timeline_counts_init, rest))
+    print("Timelines recursive:", trace_part2(timeline_counts_init, rest))
+    print("Timelines iterative:", trace_part2_iterative(all_lines))
