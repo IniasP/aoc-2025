@@ -21,11 +21,6 @@ class Coordinates:
         )
 
 
-def find_closest(coord: Coordinates, others: set[Coordinates]):
-    coords_and_dist = [(other, coord.distance(other)) for other in others]
-    return min(coords_and_dist, key=lambda p: p[1])
-
-
 def union(sets: list[set]):
     result = set()
     for s in sets:
