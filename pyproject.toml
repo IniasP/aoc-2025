@@ -1,0 +1,7 @@
+[project]
+name = "aoc_2025"
+version = "0.0.1"
+dependencies = [
+  "numpy==2.3.5",
+  "scipy>=1.16.3",
+]
