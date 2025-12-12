@@ -1,6 +1,3 @@
-from collections import deque
-
-
 def parse_key(line: str):
     return line.split(":")[0]
 
