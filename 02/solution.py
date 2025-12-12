@@ -17,7 +17,7 @@ def is_valid_2(n) -> bool:
     s = str(n)
     size = len(s)
     for group_size in range(1, size // 2 + 1):
-        if size % size == 0:
+        if size % group_size == 0:
             groups = [s[i : i + group_size] for i in range(0, len(s), group_size)]
             if all(g == groups[0] for g in groups):
                 print(f"{n} is invalid because of group size {group_size}")
